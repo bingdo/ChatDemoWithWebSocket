@@ -16,16 +16,17 @@ class SocketHandler(websocket.WebSocketHandler):
         if self not in cl:
             cl.append(self)
 
-
     def on_close(self):
         if self in cl:
             cl.remove(self)
 
     def on_message(self, message):
-        data = {"message": message}
-        data = json.dumps(data, ensure_ascii=False)
+        #data = {"message": message}
+        #data = json.dumps(data, ensure_ascii=False)
+        print("Client(%s) said: %s" % (cl.index(self), message))
         for c in cl:
-            c.write_message(data)
+            if c != self:
+                c.write_message(message)
 
 app = web.Application([
     (r"/", IndexHandler),
